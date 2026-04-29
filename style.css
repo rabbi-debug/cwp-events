@@ -1,23 +1,23 @@
 #cwp-events-root {
-    max-width: 700px; /* One row down the middle */
-    margin: 0 auto;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    max-width: 750px; 
+    margin: 40px auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 .event-card {
-    background: #fff;
-    border-radius: 16px;
+    background: #ffffff;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    margin-bottom: 40px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.07);
+    margin-bottom: 50px;
+    border: 1px solid #f0f0f0;
     transition: transform 0.3s ease;
-    border: 1px solid #eee;
 }
 
 .event-card:hover { transform: translateY(-5px); }
 
 .event-image {
-    height: 250px;
+    height: 300px;
     background-size: cover;
     background-position: center;
     position: relative;
@@ -28,21 +28,29 @@
     top: 20px;
     left: 20px;
     background: #fff;
-    padding: 10px;
-    border-radius: 12px;
+    padding: 12px;
+    border-radius: 15px;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    min-width: 60px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    min-width: 65px;
 }
 
-.date-badge .month { display: block; font-size: 12px; font-weight: bold; color: #1c91c0; text-transform: uppercase; }
-.date-badge .day { font-size: 24px; font-weight: 800; }
+.date-badge .month { display: block; font-size: 13px; font-weight: 800; color: #1c91c0; text-transform: uppercase; }
+.date-badge .day { font-size: 26px; font-weight: 900; color: #333; line-height: 1; }
 
-.event-content { padding: 25px; }
-.category-tag { font-size: 11px; font-weight: bold; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-.event-title { margin: 10px 0; color: #1a202c; font-size: 24px; }
-.event-desc { color: #4a5568; line-height: 1.6; margin-bottom: 20px; }
+.event-content { padding: 30px; }
+.category-tag { font-size: 12px; font-weight: 700; color: #11a9cc; text-transform: uppercase; letter-spacing: 1px; }
+.event-title { margin: 12px 0; color: #1a202c; font-size: 28px; font-weight: 800; line-height: 1.2; }
+.event-time { color: #718096; font-size: 15px; font-weight: 600; margin-bottom: 15px; }
+.event-desc { color: #4a5568; line-height: 1.7; margin-bottom: 25px; font-size: 16px; }
 
-.event-actions { display: flex; gap: 15px; align-items: center; }
-.rsvp-btn { background: #1c91c0; color: #fff; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; flex-grow: 1; text-align: center; }
-.cal-btn { color: #1c91c0; text-decoration: none; font-size: 14px; font-weight: 600; }
+.event-actions { display: flex; gap: 20px; align-items: center; }
+.rsvp-btn { background: #1c91c0; color: #fff; padding: 14px 30px; border-radius: 12px; text-decoration: none; font-weight: 700; flex-grow: 1; text-align: center; transition: background 0.2s; }
+.rsvp-btn:hover { background: #157da6; }
+.cal-btn { color: #1c91c0; text-decoration: none; font-size: 14px; font-weight: 700; border-bottom: 2px solid transparent; }
+.cal-btn:hover { border-bottom-color: #1c91c0; }
+
+@media (max-width: 600px) {
+    #cwp-events-root { padding: 10px; }
+    .event-image { height: 200px; }
+}
