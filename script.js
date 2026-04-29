@@ -5,51 +5,56 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch(csvUrl)
         .then(response => response.text())
         .then(csvText => {
-            const data = parseCSV(csvText);
-            renderEvents(data);
-        });
-
-    function parseCSV(text) {
-        const lines = text.split('\n').slice(1); // Skip header
-        return lines.map(line => {
-            const [Title, Date, Time, ImageURL, Description, Category, RSVP_Link, Status] = line.split(',');
-            return { Title, Date, Time, ImageURL, Description, Category, RSVP_Link, Status: Status?.trim() };
-        });
-    }
+            const lines = csvText.split(/\r?\n/).slice(1);
+            const events = lines.map(line => {
+                // Regex to handle potential commas inside quotes in the CSV
+                const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
+                const clean = parts.map(p => p.replace(/^"|"$/g, '').trim());
+                return {
+                    Title: clean[0], Date: clean[1], Time: clean[2], ImageURL: clean[3],
+                    Description: clean[4], Category: clean[5], Link: clean[6], Status: clean[7]
+                };
+            });
+            renderEvents(events);
+        })
+        .catch(err => console.error("Error loading events:", err));
 
     function renderEvents(events) {
         const today = new Date().toISOString().split('T')[0];
-        const container = document.getElementById('cwp-events-root');
-        
-        // Filter: Must be Active and Today or Future
         const activeEvents = events.filter(e => 
             e.Status === 'Active' && e.Date >= today
         ).sort((a, b) => new Date(a.Date) - new Date(b.Date));
 
         if (activeEvents.length === 0) {
-            container.innerHTML = "<p class='no-events'>Stay tuned! New events coming soon.</p>";
+            root.innerHTML = "<div style='text-align:center; padding:50px; color:#666;'>No upcoming events found. Check back soon!</div>";
             return;
         }
 
-        container.innerHTML = activeEvents.map(event => `
-            <div class="event-card">
-                <div class="event-image" style="background-image: url('${event.ImageURL}')">
-                    <div class="date-badge">
-                        <span class="month">${new Date(event.Date).toLocaleString('default', { month: 'short' })}</span>
-                        <span class="day">${new Date(event.Date).getDate() + 1}</span>
+        root.innerHTML = activeEvents.map(event => {
+            const d = new Date(event.Date + 'T00:00:00'); 
+            const month = d.toLocaleString('default', { month: 'short' });
+            const day = d.getDate();
+
+            return `
+                <div class="event-card">
+                    <div class="event-image" style="background-image: url('${event.ImageURL}')">
+                        <div class="date-badge">
+                            <span class="month">${month}</span>
+                            <span class="day">${day}</span>
+                        </div>
+                    </div>
+                    <div class="event-content">
+                        <span class="category-tag">${event.Category}</span>
+                        <h2 class="event-title">${event.Title}</h2>
+                        <div class="event-time">🕒 ${event.Time}</div>
+                        <p class="event-desc">${event.Description}</p>
+                        <div class="event-actions">
+                            <a href="${event.Link}" class="rsvp-btn" target="_blank">RSVP NOW</a>
+                            <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.Title)}&dates=${event.Date.replace(/-/g, '')}/${event.Date.replace(/-/g, '')}" target="_blank" class="cal-btn">+ Add to Calendar</a>
+                        </div>
                     </div>
                 </div>
-                <div class="event-content">
-                    <span class="category-tag">${event.Category}</span>
-                    <h2 class="event-title">${event.Title}</h2>
-                    <p class="event-time"><i class="far fa-clock"></i> ${event.Time}</p>
-                    <p class="event-desc">${event.Description}</p>
-                    <div class="event-actions">
-                        <a href="${event.RSVP_Link}" class="rsvp-btn">RSVP NOW</a>
-                        <a href="https://www.google.com/calendar/render?action=TEMPLATE&text=${event.Title}&dates=${event.Date.replace(/-/g, '')}" target="_blank" class="cal-btn">+ Add to Calendar</a>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 });
